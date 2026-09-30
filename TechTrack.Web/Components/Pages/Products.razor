@@ -1,0 +1,64 @@
+﻿@page "/products"
+@using TechTrack.Web.Models
+@using System.Net.Http.Json
+@inject IHttpClientFactory HttpClientFactory
+<h1>Hockey Shop</h1>
+
+@if(products == null)
+{
+    <p>Loading products...</p>
+}
+else
+{
+    @foreach (var product in products)
+    {
+        <ProductCard Product ="product" OnAddToCart="AddToCart"/>
+    }
+}
+
+<h2>Cart Items</h2>
+@foreach(var item in cartItems)
+{
+    <p>
+        @item.Product.Id;
+        @item.Product.Name;
+        Quantity: @item.Quantity;
+    </p>
+    
+}
+<p>Cart quantity: @quantity</p>
+<p>Last added: @lastAddedProduct</p>
+
+@code {
+    //private string productName = "bauer Hockey Stick";
+    //private decimal price = 179.9m;
+    private int quantity = 0;
+    private string lastAddedProduct = "";
+    private List<ProductDto>? products;
+    private List<CartItem> cartItems=new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var client = HttpClientFactory.CreateClient("TechTrackApi");
+        products = await client.GetFromJsonAsync<List<ProductDto>>("api/products");
+    }
+
+    private void AddToCart(ProductDto product)
+    {
+        var existingitem = cartItems.FirstOrDefault(item => item.Product.Id == product.Id);
+        if (existingitem == null)
+        {
+            CartItem item = new CartItem();
+            item.Product = product;
+            item.Quantity++;
+            cartItems.Add(item);
+        }
+        else
+        {
+            existingitem.Quantity++;
+        }
+        //quantity++;
+        lastAddedProduct = product.Name;
+        Console.WriteLine($"added:{product.Name}");
+    }
+}

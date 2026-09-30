@@ -1,0 +1,26 @@
+﻿@using TechTrack.Web.Models
+<div>
+    <img src="@product.ImageUrl"
+         alt="@product.Name"
+         width="250" />
+    <h3>@product.Name</h3>
+    <p>Price: €@product.Price.ToString("F2")</p>
+
+    <button @onclick="AddToCart">
+        Add to cart
+    </button>
+    <hr />
+</div>
+
+@code {
+    [Parameter]
+    public ProductDto product { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback<ProductDto> OnAddToCart{ get; set; }
+
+    private async Task AddToCart()
+    {
+        await OnAddToCart.InvokeAsync(product);
+    }
+}
