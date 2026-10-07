@@ -1,0 +1,31 @@
+﻿@page "/cart"
+@using TechTrack.Web.Models
+@using TechTrack.Web.Services
+@inject CartService cartService
+
+<h3>Cart</h3>
+@foreach (var item in cartService.CartItems)
+{
+    <p>
+        @item.Product.Id;
+        @item.Product.Name;
+        Quantity: @item.Quantity;
+
+        <button @onclick="() => cartService.IncreaseQuantity(item)">
+        +
+        </button>
+        @if(item.Quantity>0)
+        {
+            <button @onclick="() => cartService.DecreaseQuantity(item)">
+                -
+            </button>
+        }
+            
+    </p>
+
+}
+<h3>Total Cost:euro @cartService.GetPrice().ToString("F2")</h3>
+@code {
+   
+
+}

@@ -1,7 +1,9 @@
 ﻿@page "/products"
 @using TechTrack.Web.Models
+@using TechTrack.Web.Services
 @using System.Net.Http.Json
 @inject IHttpClientFactory HttpClientFactory
+@inject CartService cartService
 <h1>Hockey Shop</h1>
 
 @if(products == null)
@@ -17,7 +19,7 @@ else
 }
 
 <h2>Cart Items</h2>
-@foreach(var item in cartItems)
+@foreach(var item in cartService.CartItems)
 {
     <p>
         @item.Product.Id;
@@ -45,18 +47,8 @@ else
 
     private void AddToCart(ProductDto product)
     {
-        var existingitem = cartItems.FirstOrDefault(item => item.Product.Id == product.Id);
-        if (existingitem == null)
-        {
-            CartItem item = new CartItem();
-            item.Product = product;
-            item.Quantity++;
-            cartItems.Add(item);
-        }
-        else
-        {
-            existingitem.Quantity++;
-        }
+        cartService.AddToCart(product);
+
         //quantity++;
         lastAddedProduct = product.Name;
         Console.WriteLine($"added:{product.Name}");

@@ -1,4 +1,5 @@
 using TechTrack.Web.Components;
+using TechTrack.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ builder.Services.AddHttpClient("TechTrackApi", client =>
 {
     client.BaseAddress = new Uri("https://localhost:7007/");
 });
+builder.Services.AddScoped<CartService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

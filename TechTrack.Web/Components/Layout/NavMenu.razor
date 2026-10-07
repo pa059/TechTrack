@@ -1,4 +1,9 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using TechTrack.Web.Services 
+
+@inject CartService cartService
+@implements IDisposable
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">TechTrack.Web</a>
     </div>
@@ -17,6 +22,11 @@
             <NavLink class="nav-link" href="products">
                 <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Products
             </NavLink>
+        </div
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="cart">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Cart(@cartService.GetCartQuantity())
+            </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="counter">
@@ -31,4 +41,15 @@
         </div>
     </nav>
 </div>
+@code{
+    protected override void OnInitialized()
+    {
+        cartService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        cartService.OnChange -= StateHasChanged;
+    }
+}
 
